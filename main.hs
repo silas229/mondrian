@@ -112,10 +112,9 @@ insertAt toInsert original index = do
 
 -- uses insertAt to recursively insert toInsert into the original List at all supplied indices
 multiInsertAt :: [a] -> [a] -> [Int] -> [a]
-multiInsertAt toInsert original indices =
-    if indices == []
-        then original
-        else multiInsertAt toInsert (insertAt toInsert original (head indices)) (tail indices)
+multiInsertAt _ original [] = original
+multiInsertAt toInsert original (indicesHead:indicesTail) =
+    multiInsertAt toInsert (insertAt toInsert original indicesHead) indicesTail
 
 -- replaces the element in the original list at the supplied index with toInsert
 replaceAt :: [a] -> [a] -> Int -> [a]
@@ -125,10 +124,9 @@ replaceAt toInsert original index = do
 
 -- uses replaceAt to recursively replace the elements in the original List at all supplied indices with toInsert
 multiReplaceAt :: [a] -> [a] -> [Int] -> [a]
-multiReplaceAt toInsert original indices =
-    if indices == []
-        then original
-        else multiReplaceAt toInsert (replaceAt toInsert original (head indices)) (tail indices)
+multiReplaceAt _ original [] = original
+multiReplaceAt toInsert original (indicesHead:indicesTail) =
+    multiReplaceAt toInsert (replaceAt toInsert original indicesHead) indicesTail
 
 
 ----------functions to check if a PlacedBlock collides with the PlacedBlocks already on a Board
