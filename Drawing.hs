@@ -4,8 +4,6 @@ import GameElements
 import Collision
 
 
--- TODO: look into https://hackage.haskell.org/package/brick
-
 ------------- functions to draw a Board to the Console
 --draws the Board in the Console. Coordinates occupied by a Block are marked with an X, the rest with an O
 draw :: Board -> IO()
@@ -16,6 +14,22 @@ draw (Board h w blocks) = do
     let filledString = multiReplaceAt "X" emptyString blockedPositionInts
     let formattedString = multiInsertAt "\n" filledString [ x*w | x <- reverse [1..h-1] ]
     putStrLn formattedString
+
+-- returns the Color attribute of the PlacedBlock
+colorOf :: PlacedBlock -> Color
+colorOf (PlacedBlock (Block _ _ color) _) = color
+
+-- returns all PlacedBlocks that occupy a single position on the Board
+-- if the game is played correctly, there should not be more than one block in one Position, but it can happen.
+placedBlocksAt :: Position -> Board -> [PlacedBlock]
+placedBlocksAt position (Board h w blocks) = filter (occupies position) blocks
+
+-- returns the 'Just'+color at the position on the Board or 'Nothing'
+colorAt :: Position -> Board -> Maybe Color
+colorAt position board =
+    if length (placedBlocksAt position board) > 0
+    then Just (colorOf (head (placedBlocksAt position board)))
+    else Nothing
 
 positionToInt :: Board -> Position -> Int
 positionToInt (Board h w _) (Position x y) = y * w + x

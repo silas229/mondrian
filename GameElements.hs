@@ -2,7 +2,7 @@ module GameElements where
 
 --------data type definions
 
-data Color = Red | Green | Blue
+data Color = Red | Green | Blue deriving (Eq, Show)
 
 data Position = Position
     {   x :: Int,
