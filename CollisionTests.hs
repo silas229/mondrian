@@ -2,9 +2,43 @@ module CollisionTests where
 
 import GameElements
 import Collision
+import Drawing
 
 
 ------tests for collisiondetection related functions
+
+testSolveGame1Block :: IO()
+testSolveGame1Block = do
+    let placedBlock = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
+    let block = Block {blockHeight=1, blockWidth=1, color=Red}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
+    putStrLn (show (length (solveGame [block] board)))
+    draw ((solveGame [block] board) !! 1)
+
+testSolveGame2Blocks :: IO()
+testSolveGame2Blocks = do
+    let placedBlock = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
+    let block1 = Block {blockHeight=1, blockWidth=1, color=Red}
+    let block2 = Block {blockHeight=1, blockWidth=1, color=Green}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
+    putStrLn (show (length (solveGame [block1, block2] board)))
+    draw ((solveGame [block1, block2] board) !! 1)
+
+testPlaceOnPositionsIfPossible :: IO()
+testPlaceOnPositionsIfPossible = do
+    let block = Block {blockHeight=1, blockWidth=1, color=Red}
+    let placedBlock = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
+    let positions = [Position {x=0, y=0}, Position {x=0, y=1}]
+    let results = placeOnPositionsIfPossible block board positions []
+    putStrLn (show (length results))
+
+testPlaceBlock :: IO()
+testPlaceBlock = do
+    let block = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = []}
+    let (Board _ _ placedBlocks) = placeBlock board block
+    putStrLn (show (length placedBlocks))
 
 testIsColliding :: IO()
 testIsColliding = do -- 2x2 Board, 1x2 Block at (0,0). Tests placing a 1x2 Block at (1,0), a 2x1 Block at (0,1), and a 1x1 Blocks at (0,0), (1,0), (0,1) and (1,1).

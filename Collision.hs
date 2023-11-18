@@ -3,6 +3,35 @@ module Collision where
 import GameElements
 
 
+solveGame :: [Block] -> Board -> [Board]
+solveGame [] board = [board]
+solveGame (nextBlock:restBlocks) board = concat (map (allPossiblePlacements nextBlock) (solveGame restBlocks board))
+
+allPossiblePlacements :: Block -> Board -> [Board]
+allPossiblePlacements block board = placeOnPositionsIfPossible block board (allPositionsInBounds board) []
+
+placeOnPositionsIfPossible :: Block -> Board -> [Position] -> [Board] -> [Board]
+placeOnPositionsIfPossible _ _ [] solutions = solutions
+placeOnPositionsIfPossible block originalBoard (nextPosition:restPositions) alreadyFoundSolutions = do
+    let placedBlock = PlacedBlock{block=block, topLeftCorner=nextPosition}
+    let isAbleToPlace = not (isInBounds originalBoard placedBlock) || isColliding originalBoard placedBlock
+    let nowFoundSolutions = if isColliding originalBoard placedBlock 
+        then alreadyFoundSolutions
+        else alreadyFoundSolutions ++ [placeBlock originalBoard placedBlock]
+    placeOnPositionsIfPossible block originalBoard restPositions nowFoundSolutions
+
+allPositionsInBounds :: Board -> [Position]
+allPositionsInBounds (Board height width _) = [Position{x, y} | x <- [0..width-1], y <- [0..height-1]]
+
+-- adds the supplied PlacedBlock to placedBlocks of the Board
+placeBlock :: Board -> PlacedBlock -> Board
+placeBlock (Board h w blocks) block = Board{boardHeight = h, boardWidth = w, placedBlocks = blocks ++ [block]}
+
+
+isInBounds :: Board -> PlacedBlock -> Bool
+isInBounds (Board h w _) (PlacedBlock (Block bh bw _) (Position x y)) = h > bh + y && w > bw + x && 0 <= bh + y && 0 <= bw + x
+
+
 -- TODO: could probably be simplified by using occupiedPositions and listOccupiedpositions and checking if they contain at least one identical element
 
 ----------functions to check if a PlacedBlock collides with the PlacedBlocks already on a Board
