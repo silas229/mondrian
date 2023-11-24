@@ -36,7 +36,7 @@ positionToInt (Board h w _) (Position x y) = y * w + x
 
 -- returns all Positions occupied by the PlacedBlocks. May contain duplicates if two PlacedBlocks overlap.
 listOccupiedpositions :: [PlacedBlock] -> [Position]
-listOccupiedpositions placedBlocks = concat (map occupiedPositions placedBlocks)
+listOccupiedpositions placedBlocks = concat (map allOccupiedPositionsPlacedBlock placedBlocks)
 
 -- inserts the element into the original list at the supplied index with toInsert - the returned list will therefore contain one more element than original
 insertAt :: [a] -> [a] -> Int -> [a]

@@ -7,59 +7,63 @@ import GameElements
 -- This is the function you're going to want to call from the "frontend" to get all solutions to the game
 solveGame :: [Block] -> Board -> [Board]
 solveGame [] board = [board]
-solveGame (nextBlock:restBlocks) board = concat (map (allPossiblePlacements nextBlock) (solveGame restBlocks board))
+solveGame (currentBlock:remainingBlocks) board = concatMap (solveSingleBlock currentBlock) (solveGame remainingBlocks board)
 
--- returns all possible solutions to legally (no overlapping, in bounds) place a single block on the board
-allPossiblePlacements :: Block -> Board -> [Board]
-allPossiblePlacements block board = placeOnPositionsIfPossible block board (allPositionsInBounds board) []
+-- Returns all possible solutions to legally (no overlapping, in bounds) place a single block on the board.
+-- Algorithm: try to place the block on each square of the board -> create copy of board for each legal placement -> return these
+solveSingleBlock :: Block -> Board -> [Board]
+solveSingleBlock block board = placeOnPositionsIfLegal block board (allPositionsBoard board) []
 
--- creates a copy of the board for each position (where the block can legally be placed) supplied and adds the Block on this position
--- meaning: places the block on all of the supplied positions on the board where doing so is legal
-placeOnPositionsIfPossible :: Block -> Board -> [Position] -> [Board] -> [Board]
-placeOnPositionsIfPossible _ _ [] solutions = solutions
-placeOnPositionsIfPossible block originalBoard (nextPosition:restPositions) alreadyFoundSolutions = do
-    let placedBlock = PlacedBlock{block=block, topLeftCorner=nextPosition}
-    let isAbleToPlace = not (isInBounds originalBoard placedBlock) || isColliding originalBoard placedBlock
-    let nowFoundSolutions = if (isColliding originalBoard placedBlock) || not (isInBounds originalBoard placedBlock)
+-- Places the block on all of the supplied positions on the board where doing so is legal
+placeOnPositionsIfLegal :: Block -> Board -> [Position] -> [Board] -> [Board]
+placeOnPositionsIfLegal _ _ [] solutions = solutions
+placeOnPositionsIfLegal block originalBoard (currentPosition:remainingPositions) alreadyFoundSolutions = do
+    let placedBlock = PlacedBlock{block=block, topLeftCorner=currentPosition}
+    let illegalToPlace = not (isInBounds originalBoard placedBlock) || isColliding originalBoard placedBlock
+    let updatedSolutions = if illegalToPlace
         then alreadyFoundSolutions
         else alreadyFoundSolutions ++ [placeBlock originalBoard placedBlock]
-    placeOnPositionsIfPossible block originalBoard restPositions nowFoundSolutions
+    placeOnPositionsIfLegal block originalBoard remainingPositions updatedSolutions
 
--- a list of all (1x1) Positions of the board; does not take into account any block sizes etc.
-allPositionsInBounds :: Board -> [Position]
-allPositionsInBounds (Board height width _) = [Position{x, y} | x <- [0..width-1], y <- [0..height-1]]
-
--- adds the supplied PlacedBlock to placedBlocks of the Board
+-- Adds the supplied PlacedBlock to placedBlocks of the Board.
 placeBlock :: Board -> PlacedBlock -> Board
 placeBlock (Board h w blocks) block = Board{boardHeight = h, boardWidth = w, placedBlocks = blocks ++ [block]}
 
--- tests if the supplied placedblock is fully within the bounds of the board
+-- Checks if the supplied placedblock is fully within the bounds of the board.
 isInBounds :: Board -> PlacedBlock -> Bool
 isInBounds (Board h w _) (PlacedBlock (Block bh bw _) (Position x y)) = h > (bh-1) + y && w > (bw-1) + x && 0 <= (bh-1) + y && 0 <= (bw-1) + x  -- -1 on bh and bw, because for example a block on y=1 and bh=1 does not actually occupy space y=2
 
+-- Returns true if the PlacedBlock would be placed on an already occupied space.
+-- Checks if there are any shared Poitions between the PlacedBlock to add and the ones already on the Board.
+isColliding :: Board -> PlacedBlock -> Bool
+isColliding board newBlock = anyEqualElements (allOccupiedPositionsPlacedBlock newBlock) (allOccupiedPositionsBoard board)
 
--- TODO: could probably be simplified by using occupiedPositions and listOccupiedpositions and checking if they contain at least one identical element
+-- Returns true if the two lists contain at least one identical element.
+anyEqualElements :: (Eq a) => [a] -> [a] -> Bool
+anyEqualElements a b = any (`elem` b) a
 
-----------functions to check if a PlacedBlock collides with the PlacedBlocks already on a Board
 
-isColliding2 :: Board -> PlacedBlock -> Bool
-isColliding2 board newBlock = do
-    let newBlockPositions = occupiedPositions newBlock
-    let blockedPositions = alreadyOccupiedBoardPositions board
-    anyEqual newBlockPositions blockedPositions
 
-anyEqual :: (Eq a) => [a] -> [a] -> Bool
-anyEqual a b = any (==True) (map (\x -> x `elem` b) a)
+-- Returns all Positions on the Board.
+allPositionsBoard :: Board -> [Position]
+allPositionsBoard (Board height width _) = [Position{x, y} | x <- [0..width-1], y <- [0..height-1]]
 
--- returns all positions occupied by the placedBlocks of board
-alreadyOccupiedBoardPositions :: Board -> [Position]
-alreadyOccupiedBoardPositions (Board _ _ placedBlocks) = concatMap occupiedPositions placedBlocks
+-- Returns all positions occupied by the placedBlocks of board.
+allOccupiedPositionsBoard :: Board -> [Position]
+allOccupiedPositionsBoard (Board _ _ placedBlocks) = concatMap allOccupiedPositionsPlacedBlock placedBlocks
 
+-- Returns a List of all Positions occupied by the PlacedBlock.
+allOccupiedPositionsPlacedBlock :: PlacedBlock -> [Position]
+allOccupiedPositionsPlacedBlock (PlacedBlock (Block height width _) (Position x y)) = [Position {x=a, y=b} | a <- [x..x+width-1], b <- [y..y+height-1]]
+
+
+
+-- old ----------------
 
 -- checks if a new PlacedBlock can be placed on the board, or if it would collide with an already existing PlacedBlock on the Board
-isColliding :: Board -> PlacedBlock -> Bool
-isColliding board newBlock = do -- checks all positions the newBlock occupies
-    let allPositions = occupiedPositions newBlock
+isCollidingOld :: Board -> PlacedBlock -> Bool
+isCollidingOld board newBlock = do -- checks all positions the newBlock occupies
+    let allPositions = allOccupiedPositionsPlacedBlock newBlock
     let checkPositionOnBoard = isOccupied board
     let positionsBlockedList = map checkPositionOnBoard allPositions
     any (==True) positionsBlockedList
@@ -74,7 +78,3 @@ isOccupied (Board _ _ placedBlocks) position = do
 -- checks if the supplied Position is occupied by this Block
 occupies :: Position -> PlacedBlock -> Bool
 occupies (Position x y) (PlacedBlock (Block height width _) (Position blockX blockY)) = x < (blockX + width) && x >= blockX && y < (blockY + height) && y >= blockY
-
--- returns a List of all Positions, that a PlacedBlock occupies
-occupiedPositions :: PlacedBlock -> [Position]
-occupiedPositions (PlacedBlock (Block height width _) (Position x y)) = [Position {x=a, y=b} | a <- [x..x+width-1], b <- [y..y+height-1]]

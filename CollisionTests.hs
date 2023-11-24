@@ -12,8 +12,8 @@ testSolveGame1Block = do
     let placedBlock = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
     let block = Block {blockHeight=1, blockWidth=1, color=Red}
     let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
-    putStrLn (show (length (solveGame [block] board)))
-    draw ((solveGame [block] board) !! 1)
+    putStrLn ("expected 3, actual: " ++ (show (length (solveGame [block] board))))
+    draw (solveGame [block] board !! 1)
 
 testSolveGame2Blocks :: IO()
 testSolveGame2Blocks = do
@@ -21,16 +21,16 @@ testSolveGame2Blocks = do
     let block1 = Block {blockHeight=1, blockWidth=1, color=Red}
     let block2 = Block {blockHeight=1, blockWidth=1, color=Green}
     let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
-    putStrLn (show (length (solveGame [block1, block2] board)))
-    draw ((solveGame [block1, block2] board) !! 1)
+    putStrLn ("expected 6, actual: " ++ show (length (solveGame [block1, block2] board)))
+    draw (solveGame [block1, block2] board !! 1)
 
 testSolveGame2BigBlocks :: IO()
 testSolveGame2BigBlocks = do
     let block1 = Block {blockHeight=2, blockWidth=1, color=Red}
     let block2 = Block {blockHeight=2, blockWidth=1, color=Green}
     let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = []}
-    putStrLn (show (length (solveGame [block1, block2] board)))
-    draw ((solveGame [block1, block2] board) !! 1)
+    putStrLn ("expected 2, actual: " ++ show (length (solveGame [block1, block2] board)))
+    draw (solveGame [block1, block2] board !! 1)
 
 testIsInBounds :: IO()
 testIsInBounds= do
@@ -48,7 +48,7 @@ testPlaceOnPositionsIfPossible = do
     let placedBlock = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
     let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
     let positions = [Position {x=0, y=0}, Position {x=0, y=1}]
-    let results = placeOnPositionsIfPossible block board positions []
+    let results = placeOnPositionsIfLegal block board positions []
     putStrLn (show (length results))
 
 testPlaceBlock :: IO()
@@ -63,22 +63,45 @@ testIsColliding = do -- 2x2 Board, 1x2 Block at (0,0). Tests placing a 1x2 Block
     let placedBlock = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
     let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
     let newBlock1 = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Red}, topLeftCorner = Position {x=1, y=0}}
-    let isCollidingResult1 = isColliding2 board newBlock1
+    let isCollidingResult1 = isColliding board newBlock1
     putStrLn ("Result of testColliding - test 1: " ++ show isCollidingResult1 ++ ", expected: False")
     let newBlock2 = PlacedBlock { block = Block {blockHeight=1, blockWidth=2, color=Blue}, topLeftCorner = Position {x=0, y=1}}
-    let isCollidingResult2 = isColliding2 board newBlock2
+    let isCollidingResult2 = isColliding board newBlock2
     putStrLn ("Result of testColliding - test 2: " ++ show isCollidingResult2 ++ ", expected: True")
     let newBlock3 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=0, y=0}}
-    let isCollidingResult3 = isColliding2 board newBlock3
+    let isCollidingResult3 = isColliding board newBlock3
     putStrLn ("Result of testColliding - test 3: " ++ show isCollidingResult3 ++ ", expected: True")
     let newBlock4 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=1, y=0}}
-    let isCollidingResult4 = isColliding2 board newBlock4
+    let isCollidingResult4 = isColliding board newBlock4
     putStrLn ("Result of testColliding - test 4: " ++ show isCollidingResult4 ++ ", expected: False")
     let newBlock5 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=0, y=1}}
-    let isCollidingResult5 = isColliding2 board newBlock5
+    let isCollidingResult5 = isColliding board newBlock5
     putStrLn ("Result of testColliding - test 5: " ++ show isCollidingResult5 ++ ", expected: True")
     let newBlock6 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=1, y=1}}
-    let isCollidingResult6 = isColliding2 board newBlock6
+    let isCollidingResult6 = isColliding board newBlock6
+    putStrLn ("Result of testColliding - test 5: " ++ show isCollidingResult6 ++ ", expected: False")
+
+testIsCollidingOld :: IO()
+testIsCollidingOld = do -- 2x2 Board, 1x2 Block at (0,0). Tests placing a 1x2 Block at (1,0), a 2x1 Block at (0,1), and a 1x1 Blocks at (0,0), (1,0), (0,1) and (1,1).
+    let placedBlock = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = [placedBlock]}
+    let newBlock1 = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Red}, topLeftCorner = Position {x=1, y=0}}
+    let isCollidingResult1 = isCollidingOld board newBlock1
+    putStrLn ("Result of testColliding - test 1: " ++ show isCollidingResult1 ++ ", expected: False")
+    let newBlock2 = PlacedBlock { block = Block {blockHeight=1, blockWidth=2, color=Blue}, topLeftCorner = Position {x=0, y=1}}
+    let isCollidingResult2 = isCollidingOld board newBlock2
+    putStrLn ("Result of testColliding - test 2: " ++ show isCollidingResult2 ++ ", expected: True")
+    let newBlock3 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=0, y=0}}
+    let isCollidingResult3 = isCollidingOld board newBlock3
+    putStrLn ("Result of testColliding - test 3: " ++ show isCollidingResult3 ++ ", expected: True")
+    let newBlock4 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=1, y=0}}
+    let isCollidingResult4 = isCollidingOld board newBlock4
+    putStrLn ("Result of testColliding - test 4: " ++ show isCollidingResult4 ++ ", expected: False")
+    let newBlock5 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=0, y=1}}
+    let isCollidingResult5 = isCollidingOld board newBlock5
+    putStrLn ("Result of testColliding - test 5: " ++ show isCollidingResult5 ++ ", expected: True")
+    let newBlock6 = PlacedBlock { block = Block {blockHeight=1, blockWidth=1, color=Blue}, topLeftCorner = Position {x=1, y=1}}
+    let isCollidingResult6 = isCollidingOld board newBlock6
     putStrLn ("Result of testColliding - test 5: " ++ show isCollidingResult6 ++ ", expected: False")
 
 testOccupies :: IO()
