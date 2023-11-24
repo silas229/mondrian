@@ -7,7 +7,7 @@ data Color = Red | Green | Blue deriving (Eq, Show)
 data Position = Position
     {   x :: Int,
         y :: Int
-    }
+    } deriving Eq
 
 data Block = Block -- a block that has not been placed on the board yet -> has no position
     {   blockHeight :: Int
