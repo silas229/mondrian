@@ -3,23 +3,29 @@ module Collision where
 import GameElements
 
 
+-- Solves the game. Returns all possible solutions for the supplied blocks and board.
+-- This is the function you're going to want to call from the "frontend" to get all solutions to the game
 solveGame :: [Block] -> Board -> [Board]
 solveGame [] board = [board]
 solveGame (nextBlock:restBlocks) board = concat (map (allPossiblePlacements nextBlock) (solveGame restBlocks board))
 
+-- returns all possible solutions to legally (no overlapping, in bounds) place a single block on the board
 allPossiblePlacements :: Block -> Board -> [Board]
 allPossiblePlacements block board = placeOnPositionsIfPossible block board (allPositionsInBounds board) []
 
+-- creates a copy of the board for each position (where the block can legally be placed) supplied and adds the Block on this position
+-- meaning: places the block on all of the supplied positions on the board where doing so is legal
 placeOnPositionsIfPossible :: Block -> Board -> [Position] -> [Board] -> [Board]
 placeOnPositionsIfPossible _ _ [] solutions = solutions
 placeOnPositionsIfPossible block originalBoard (nextPosition:restPositions) alreadyFoundSolutions = do
     let placedBlock = PlacedBlock{block=block, topLeftCorner=nextPosition}
     let isAbleToPlace = not (isInBounds originalBoard placedBlock) || isColliding originalBoard placedBlock
-    let nowFoundSolutions = if isColliding originalBoard placedBlock 
+    let nowFoundSolutions = if (isColliding originalBoard placedBlock) || not (isInBounds originalBoard placedBlock) 
         then alreadyFoundSolutions
         else alreadyFoundSolutions ++ [placeBlock originalBoard placedBlock]
     placeOnPositionsIfPossible block originalBoard restPositions nowFoundSolutions
 
+-- a list of all (1x1) Positions of the board; does not take into account any block sizes etc.
 allPositionsInBounds :: Board -> [Position]
 allPositionsInBounds (Board height width _) = [Position{x, y} | x <- [0..width-1], y <- [0..height-1]]
 
@@ -27,9 +33,9 @@ allPositionsInBounds (Board height width _) = [Position{x, y} | x <- [0..width-1
 placeBlock :: Board -> PlacedBlock -> Board
 placeBlock (Board h w blocks) block = Board{boardHeight = h, boardWidth = w, placedBlocks = blocks ++ [block]}
 
-
+-- tests if the supplied placedblock is fully within the bounds of the board
 isInBounds :: Board -> PlacedBlock -> Bool
-isInBounds (Board h w _) (PlacedBlock (Block bh bw _) (Position x y)) = h > bh + y && w > bw + x && 0 <= bh + y && 0 <= bw + x
+isInBounds (Board h w _) (PlacedBlock (Block bh bw _) (Position x y)) = h > (bh-1) + y && w > (bw-1) + x && 0 <= (bh-1) + y && 0 <= (bw-1) + x  -- -1 on bh and bw, because for example a block on y=1 and bh=1 does not actually occupy space y=2
 
 
 -- TODO: could probably be simplified by using occupiedPositions and listOccupiedpositions and checking if they contain at least one identical element

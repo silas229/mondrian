@@ -24,6 +24,24 @@ testSolveGame2Blocks = do
     putStrLn (show (length (solveGame [block1, block2] board)))
     draw ((solveGame [block1, block2] board) !! 1)
 
+testSolveGame2BigBlocks :: IO()
+testSolveGame2BigBlocks = do
+    let block1 = Block {blockHeight=2, blockWidth=1, color=Red}
+    let block2 = Block {blockHeight=2, blockWidth=1, color=Green}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = []}
+    putStrLn (show (length (solveGame [block1, block2] board)))
+    draw ((solveGame [block1, block2] board) !! 1)
+
+testIsInBounds :: IO()
+testIsInBounds= do
+    let placedBlock1 = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=1}}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = []}
+    let inBounds1 = isInBounds board placedBlock1
+    putStrLn ("Result of tesIsInBounds - test 1: " ++ show inBounds1 ++ ", expected: False")
+    let placedBlock2 = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=0}}
+    let inBounds2 = isInBounds board placedBlock2
+    putStrLn ("Result of tesIsInBounds - test 2: " ++ show inBounds2 ++ ", expected: True")
+
 testPlaceOnPositionsIfPossible :: IO()
 testPlaceOnPositionsIfPossible = do
     let block = Block {blockHeight=1, blockWidth=1, color=Red}
