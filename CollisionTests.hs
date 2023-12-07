@@ -32,6 +32,13 @@ testSolveGame2BigBlocks = do
     putStrLn ("expected 2, actual: " ++ show (length (solveGame [block1, block2] board)))
     draw (solveGame [block1, block2] board !! 1)
 
+testSolveGameNoSolution :: IO()
+testSolveGameNoSolution = do
+    let block1 = Block {blockHeight=3, blockWidth=1, color=Red}
+    let block2 = Block {blockHeight=2, blockWidth=1, color=Green}
+    let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = []}
+    putStrLn ("expected 0, actual: " ++ show (length (solveGame [block1, block2] board)))
+
 testIsInBounds :: IO()
 testIsInBounds= do
     let placedBlock1 = PlacedBlock { block = Block {blockHeight=2, blockWidth=1, color=Green}, topLeftCorner = Position {x=0, y=1}}

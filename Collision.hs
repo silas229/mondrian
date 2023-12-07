@@ -17,24 +17,24 @@ solveSingleBlock block board = placeOnPositionsIfLegal block board (allPositions
 -- Places the block on all of the supplied positions on the board where doing so is legal
 placeOnPositionsIfLegal :: Block -> Board -> [Position] -> [Board] -> [Board]
 placeOnPositionsIfLegal _ _ [] solutions = solutions
-placeOnPositionsIfLegal block originalBoard (currentPosition:remainingPositions) alreadyFoundSolutions = do
-    let placedBlock = PlacedBlock{block=block, topLeftCorner=currentPosition}
-    let illegalToPlace = not (isInBounds originalBoard placedBlock) || isColliding originalBoard placedBlock
-    let updatedSolutions = if illegalToPlace
-        then alreadyFoundSolutions
-        else alreadyFoundSolutions ++ [placeBlock originalBoard placedBlock]
-    placeOnPositionsIfLegal block originalBoard remainingPositions updatedSolutions
+placeOnPositionsIfLegal block originalBoard (currentPosition:remainingPositions) alreadyFoundSolutions
+    | illegalToPlace = updatedSolutions
+    | otherwise = updatedSolutions ++ [placeBlock originalBoard placedBlock]
+  where
+    placedBlock = PlacedBlock { block = block, topLeftCorner = currentPosition }
+    illegalToPlace = not (isInBounds originalBoard placedBlock) || isColliding originalBoard placedBlock
+    updatedSolutions = placeOnPositionsIfLegal block originalBoard remainingPositions alreadyFoundSolutions
 
 -- Adds the supplied PlacedBlock to placedBlocks of the Board.
 placeBlock :: Board -> PlacedBlock -> Board
-placeBlock (Board h w blocks) block = Board{boardHeight = h, boardWidth = w, placedBlocks = blocks ++ [block]}
+placeBlock board block = board{placedBlocks = placedBlocks board ++ [block]}
 
 -- Checks if the supplied placedblock is fully within the bounds of the board.
 isInBounds :: Board -> PlacedBlock -> Bool
-isInBounds (Board h w _) (PlacedBlock (Block bh bw _) (Position x y)) = h > (bh-1) + y && w > (bw-1) + x && 0 <= (bh-1) + y && 0 <= (bw-1) + x  -- -1 on bh and bw, because for example a block on y=1 and bh=1 does not actually occupy space y=2
+isInBounds board (PlacedBlock (Block bh bw _) (Position x y)) = boardHeight board > (bh-1) + y && boardWidth board > (bw-1) + x && 0 <= (bh-1) + y && 0 <= (bw-1) + x  -- -1 on bh and bw, because for example a block on y=1 and bh=1 does not actually occupy space y=2
 
 -- Returns true if the PlacedBlock would be placed on an already occupied space.
--- Checks if there are any shared Poitions between the PlacedBlock to add and the ones already on the Board.
+-- Checks if there are any shared Positions between the PlacedBlock to add and the ones already on the Board.
 isColliding :: Board -> PlacedBlock -> Bool
 isColliding board newBlock = anyEqualElements (allOccupiedPositionsPlacedBlock newBlock) (allOccupiedPositionsBoard board)
 
