@@ -9,12 +9,19 @@ solveGame :: [Block] -> Board -> [Board]
 solveGame [] board = [board]
 solveGame (currentBlock:remainingBlocks) board = concatMap (solveSingleBlock currentBlock) (solveGame remainingBlocks board)
 
--- Returns all possible solutions to legally (no overlapping, in bounds) place a single block on the board.
+-- Returns all possible solutions to legally (no overlapping, in bounds) place a single block on the board, including rotation.
 -- Algorithm: try to place the block on each square of the board -> create copy of board for each legal placement -> return these
 solveSingleBlock :: Block -> Board -> [Board]
-solveSingleBlock block board = placeOnPositionsIfLegal block board (allPositionsBoard board) []
+solveSingleBlock block board = do
+    let nonRotatedSolution = placeOnPositionsIfLegal block board (allPositionsBoard board) []
+    let isSquare = blockHeight block == blockWidth block
+    let rotatedSolution = if not isSquare --no need to rotate the block if the it is a square
+        then placeOnPositionsIfLegal (rotate block) board (allPositionsBoard board) []
+        else []
+    nonRotatedSolution ++ rotatedSolution
 
 -- Places the block on all of the supplied positions on the board where doing so is legal
+-- does not rotate the given block.
 placeOnPositionsIfLegal :: Block -> Board -> [Position] -> [Board] -> [Board]
 placeOnPositionsIfLegal _ _ [] solutions = solutions
 placeOnPositionsIfLegal block originalBoard (currentPosition:remainingPositions) alreadyFoundSolutions
@@ -57,6 +64,9 @@ allOccupiedPositionsPlacedBlock :: PlacedBlock -> [Position]
 allOccupiedPositionsPlacedBlock (PlacedBlock (Block height width _) (Position x y)) = [Position {x=a, y=b} | a <- [x..x+width-1], b <- [y..y+height-1]]
 
 
+--rotates the given Block 90 degrees (swaps height and width)
+rotate :: Block -> Block
+rotate block = block{blockHeight = blockWidth block, blockWidth = blockHeight block}
 
 -- old ----------------
 

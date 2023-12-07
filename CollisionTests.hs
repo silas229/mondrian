@@ -29,7 +29,7 @@ testSolveGame2BigBlocks = do
     let block1 = Block {blockHeight=2, blockWidth=1, color=Red}
     let block2 = Block {blockHeight=2, blockWidth=1, color=Green}
     let board = Board {boardHeight = 2, boardWidth = 2, placedBlocks = []}
-    putStrLn ("expected 2, actual: " ++ show (length (solveGame [block1, block2] board)))
+    putStrLn ("expected 4, actual: " ++ show (length (solveGame [block1, block2] board)))
     draw (solveGame [block1, block2] board !! 1)
 
 testSolveGameNoSolution :: IO()
