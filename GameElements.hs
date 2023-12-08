@@ -13,7 +13,14 @@ data Block = Block -- a block that has not been placed on the board yet -> has n
     {   blockHeight :: Int
     ,   blockWidth  :: Int
     ,   color :: Color
-    }
+    } deriving Eq
+
+instance Ord Block where
+    compare :: Block -> Block -> Ordering
+    compare block1 block2 =
+        compare (blockHeight block1 * blockWidth block1) (blockHeight block2 * blockWidth block2)
+
+
 
 data PlacedBlock = PlacedBlock -- a block that has been placed on the board -> has a position
     {   block :: Block
