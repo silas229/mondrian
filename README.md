@@ -1,92 +1,56 @@
 # mondrian
 
+A solver for the puzzle game https://mondrianblocks.com/
+
+## 1) Was wurde gemacht?
+Wir haben für das Puzzle-Spiel Mondrian Blocks ein Lösungs-Programm entwickelt.
+
+Bei Mondrian Blocks gibt es ein quadratisches, 8x8 Felder großes Spielfeld. Außerdem gibt es einige Blöcke, die das Spielfeld zusammen vollständig ausfüllen. Am Start des Spiels sind einige Blöcke jeweils bereits auf dem Spielfeld platziert, und die restlichen Blöcke müssen nun so angeordnet werden, dass alle auf dem Spielfeld Platz finden. <p>
+Mit unserem Programm kann nun diese Ausgangslage per Konsoleneingabe eingegeben, und alle Lösungen für diese angezeigt werden. 
+Der Lösungsalgorithmus basiert darauf, einen Block nach dem anderen an allen noch freien Positionen des Spielfeldes zu platzieren. Jede dieser Platzierungen wird als Kopie des Spielfelds gespeichert und als Ausgangslage für den nächsten Berechnungsschritt genutzt. In den meisten Fällen bleibt irgendwann kein Platz mehr für den nächsten Block, und dieser Lösungsansatz wird verworfen. Passiert dies nie, handelt es sich um eine valide Lösung, die schließlich zurück gegeben wird.
+Im einem Berechnungsschritt wird also der ein Block auf jedes freie Feld des Spielbretts platziert. Für jede Möglichkeit wird  eine Kopie des Spielfelds mit diesem platzierten Block erstellt. Auf jede dieser Kopien wird nun wieder dieser Berechnungsschritt angewandt. Dies wird wiederholt, bis keine Blöcke mehr übrig sind. <p>
+Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispiel: Die kleinsten Blöcke zuerst platzieren, um, sollte es auf dem Spielfeld eine 1-breite Lücke, aber keinen so schmalen Block mehr geben, den Versuch direkt zu verwerfen. Es hat sich aber herausgestellt, dass es am effizientesten ist, die größten Blöcke zuerst zu platzieren, um so früh die Anzahl zu prüfender Varianten zu begrenzen.
+
+## 2) Wie ist der Installationsprozess?
+Es gibt keine Dependencies, das Programm kann einfach durch Aufruf von main in Game gestartet werden.
+
+## 3) Wie ist die Bedienung?
+Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt.
+Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe.
 
 
-## Getting started
+## - Listen - ja/nein
+Listen werden in den meisten Funktionen verwendet. Bei der Berechnung aller Lösungsmöglichkeiten werden die verschiedenen Spielbretter, welche alle möglichen Kombinationen darstellen, als Liste gespeichert. 
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## - list comprehension - ja/nein
+Wird verwendet, etwa in Collision/allPositionsBoard.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## - Funktionen mit pattern matching - ja/nein	
+In zahlreichen Funktionen wird Pattern Matching verwendet, etwa in Collision/placeOnBlocksIfLegal, wo es verwendet wird, um eine Liste zu Teilen und Rekursion zu vereinfachen. Auch in Collision/isInBounds, Collision/allOccupiedPositions, und anderen Funktionen wird es verwendet.
 
-## Add your files
+## - Funktionen mit guards - ja/nein
+Ja, wird etwa in Collision/placePositionsIfLegal  verwendet.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## - Rekursive Funktionen - ja/nein
+Ja, Rekursion wird an allen Stellen eingesetzt, wo wiederholte Ausführung nötig ist, etwa in Collision/placeOnPositionsIfLegal.
 
-```
-cd existing_repo
-git remote add origin https://gitlab-fi.ostfalia.de/id793398/mondrian.git
-git branch -M main
-git push -uf origin main
-```
+## - Funktionen höherer Ordnung wie map, filter, fold - ja/nein
+Ja, zum Beispiel concatMap in Collision/solveGame und Collision/allOccupiedPositionsBoard.
 
-## Integrate with your tools
+## - Fehlerbehandlung ggf. mit Either oder Maybe - ja/nein
+Nein. Der Algorithmus wurde so entwickelt, dass Fehlerbehandlung nicht notwendig ist. Wenn es keine validen Lösungen für den eingegebenen Spielstand gibt, dann ist das kein Fehler, entsprechend wird eine leere Liste zurück gegeben.
 
-- [ ] [Set up project integrations](https://gitlab-fi.ostfalia.de/id793398/mondrian/-/settings/integrations)
+## - Eigene Datentypen - ja/nein
+Ja. Eigene Datentypen waren essenziell, um das Programm effizient umzusetzen. Analog zu den realen Spielelementen – Spielbrett und Blöcke – sind in GameElements Datentypen definiert.
 
-## Collaborate with your team
+## - Ein/Ausgabe mit IO-Monaden - ja/nein
+Nein.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## - Modularisierung - ja/nein
+Ja. Bereits erwähnt wurde, dass die Datentypen in GameElements ausgelagert wurde. 	Der eigentliche Algorithmus ist so gekapselt in Collision.
 
-## Test and Deploy
+## - Übersichtlicher Code (ggf. let / where verwendet) - ja/nein
+Damit der Code möglichst leserlich ist, haben wir den Ablauf in möglichst viele Teilfunktionen zerlegt und mit Kommentaren ergänzt. Wo eine weitere Zerlegung nicht möglich war, haben wir where und let verwendet, um den Ablauf innerhalb der Funktion deutlicher zu machen, etwa in Collision/placeOnPositionsIfLegal und Collision/solveSingleBlock.
 
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## - wichtigste Teile des Codes dokumentiert - ja/nein
+Ja. Alle Funktionen des Lösungsalgorithmus sind kommentiert, um die Implementierung nachvollziehbarer zu machen.
