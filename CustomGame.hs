@@ -21,8 +21,10 @@ main = do
   draw board
 
   putStrLn "Possible solutions:"
-  sequence_ (map draw (solveGame blocks board))
-  putStrLn "Done"
+  let solutions = solveGame blocks board
+  sequence_ (map draw solutions)
+  putStr "Done. Found sollutions: "
+  putStr (show (length solutions))
 
 -- Splits a string on a given character
 -- Returns a list of strings

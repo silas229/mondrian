@@ -11,6 +11,7 @@ Mit unserem Programm kann nun diese Ausgangslage per Konsoleneingabe eingegeben,
 Der Lösungsalgorithmus basiert darauf, einen Block nach dem anderen an allen noch freien Positionen des Spielfeldes zu platzieren. Jede dieser Platzierungen wird als Kopie des Spielfelds gespeichert und als Ausgangslage für den nächsten Berechnungsschritt genutzt. In den meisten Fällen bleibt irgendwann kein Platz mehr für den nächsten Block, und dieser Lösungsansatz wird verworfen. Passiert dies nie, handelt es sich um eine valide Lösung, die schließlich zurück gegeben wird.
 Im einem Berechnungsschritt wird also der ein Block auf jedes freie Feld des Spielbretts platziert. Für jede Möglichkeit wird  eine Kopie des Spielfelds mit diesem platzierten Block erstellt. Auf jede dieser Kopien wird nun wieder dieser Berechnungsschritt angewandt. Dies wird wiederholt, bis keine Blöcke mehr übrig sind.  
 Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispiel: Die kleinsten Blöcke zuerst platzieren, um, sollte es auf dem Spielfeld eine 1-breite Lücke, aber keinen so schmalen Block mehr geben, den Versuch direkt zu verwerfen. Es hat sich aber herausgestellt, dass es am effizientesten ist, die größten Blöcke zuerst zu platzieren, um so früh die Anzahl zu prüfender Varianten zu begrenzen.
+<!-- TODO: Falls du den Code für die anderen Algorithmen noch hast: Benchmarks präsentieren -->
 
 ## 2) Wie ist der Installationsprozess?
 
@@ -18,13 +19,13 @@ Es gibt keine Dependencies, das Programm kann einfach durch Aufruf von main in G
 
 ## 3) Wie ist die Bedienung?
 
-Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt.
-Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe.
+Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt. (`$ runhaskell ./Game.hs`)
+Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe. (`$ runhaskell ./Game.hs`)
 
 ### Beispielprotokoll (Originalspiel)
 
 ```
-$ runhaskell Game.hs
+$ runhaskell ./Game.hs
 Enter x,y for block 1x1. Position 0,0 is at the upper left corner.
 2,3
 Enter x,y,orientation (v/h) for block 1x2
