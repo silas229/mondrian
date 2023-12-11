@@ -45,8 +45,12 @@ main = do
   putStrLn "Initial board:"
   draw board
 
+  solutions (Game board getBlocks)
+
+solutions :: Game -> IO ()
+solutions game = do
   putStrLn "Possible solutions:"
-  let solutions = solveGame getBlocks board
+  let solutions = solveGame game
   sequence_ (map draw solutions)
   putStr "Done. Found sollutions: "
   putStr (show (length solutions))

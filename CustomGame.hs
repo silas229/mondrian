@@ -1,8 +1,9 @@
-module Game where
+module CustomGame where
 
 import GameElements
 import Drawing
 import Collision
+import Game
 
 -- Main function
 -- Adds the ability to play a custom game with custom blocks and a custom board size
@@ -16,25 +17,11 @@ main = do
   putStrLn "Enter x,y,w,h for a black starting block and w,h,color for a block to be placed. Position 0,0 is at the upper left corner. Color is interpreted by the first letter."
   let args = splitOn ',' input
 
-  let [board, blocks] = getUserInput w h
+  let game = getUserInput w h
   putStrLn "Initial board:"
-  draw board
+  draw (board game)
 
-  putStrLn "Possible solutions:"
-  let solutions = solveGame blocks board
-  sequence_ (map draw solutions)
-  putStr "Done. Found sollutions: "
-  putStr (show (length solutions))
-
--- Splits a string on a given character
--- Returns a list of strings
--- TODO: Duplicate of function in Game.hs
-splitOn :: Char -> String -> [String]
-splitOn _ [] = []
-splitOn c s = let (x, rest) = break (== c) s
-  in x : case rest of
-    [] -> []
-    (_:xs) -> splitOn c xs
+  solutions game
 
 -- Calculates the cumulative area of all blocks
 calcArea :: [Block] -> Int
