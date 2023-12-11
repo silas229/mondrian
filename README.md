@@ -2,6 +2,7 @@
 
 A solver for the puzzle game https://mondrianblocks.com/
 
+
 ## 1) Was wurde gemacht?
 Wir haben für das Puzzle-Spiel Mondrian Blocks ein Lösungs-Programm entwickelt.
 
@@ -18,6 +19,28 @@ Es gibt keine Dependencies, das Programm kann einfach durch Aufruf von main in G
 Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt.
 Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe.
 
+### Beispielprotokoll (Originalspiel)
+```
+❯ runhaskell Game.hs
+Enter x,y for block 1x1. Position 0,0 is at the upper left corner.
+2,3
+Enter x,y,orientation (v/h) for block 1x2
+0,1,v
+Enter x,y,orientation (v/h) for block 1x3
+4,7,h
+Initial board:
+
+█
+█
+  █
+
+
+
+    ███
+--------
+Possible solutions:
+```
+![](example-solution.png)
 
 ## - Listen - ja/nein
 Listen werden in den meisten Funktionen verwendet. Bei der Berechnung aller Lösungsmöglichkeiten werden die verschiedenen Spielbretter, welche alle möglichen Kombinationen darstellen, als Liste gespeichert. 
