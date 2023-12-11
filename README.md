@@ -60,28 +60,28 @@ Listen werden in den meisten Funktionen verwendet. Bei der Berechnung aller Lös
 
 ## - list comprehension - ja
 
-Wird verwendet, etwa in Collision#allPositionsBoard.
+Wird verwendet, etwa in 'Solving#allPositionsBoard'.
 
 ## - Funktionen mit pattern matching - ja
 
-In zahlreichen Funktionen wird Pattern Matching verwendet, etwa in Collision#placeOnBlocksIfLegal, wo es verwendet wird, um eine Liste zu Teilen und Rekursion zu vereinfachen. Auch in Collision#isInBounds, Collision#allOccupiedPositions, und anderen Funktionen wird es verwendet.
+In zahlreichen Funktionen wird Pattern Matching verwendet, etwa in 'Solving#placeOnBlocksIfLegal', wo es verwendet wird, um eine Liste zu Teilen und Rekursion zu vereinfachen. Auch in 'Solving#isInBounds', 'Solving#allOccupiedPositions', und anderen Funktionen wird es verwendet.
 
 ## - Funktionen mit guards - ja
 
-Wird etwa in `Collision#placePositionsIfLegal`  verwendet.
+Wird etwa in `Solving#placePositionsIfLegal`  verwendet.
 
 ## - Rekursive Funktionen - ja
 
-Rekursion wird an allen Stellen eingesetzt, wo wiederholte Ausführung nötig ist, etwa in `Collision#placeOnPositionsIfLegal` oder `CustomGame#getUserInput`.
+Rekursion wird an allen Stellen eingesetzt, wo wiederholte Ausführung nötig ist, etwa in `Solving#placeOnPositionsIfLegal` oder `CustomGame#getUserInput`.
 
 ## - Funktionen höherer Ordnung wie map, filter, fold - ja
 
-Zum Beispiel concatMap in `Collision#solveGame` und `Collision#allOccupiedPositionsBoard`.
+Zum Beispiel concatMap in `Solving#solveGame` und `Solving#allOccupiedPositionsBoard`.
 
 ## - Fehlerbehandlung ggf. mit Either oder Maybe - ja
 
 Der Algorithmus wurde so entwickelt, dass Fehlerbehandlung dort nicht notwendig ist. Wenn es keine validen Lösungen für den eingegebenen Spielstand gibt, dann ist das kein Fehler, entsprechend wird eine leere Liste zurück gegeben.
-Allerdings wird Maybe in `CustomGame#getUserInput` zurückgegeben, wenn mehr Blöcke angegeben werden, als auf das Board passen. Dort wird auch weitere Fehlerbehandlung der Eingabe durchgeführt, indem geprüft wird, ob die Anzahl der Argumente korrekt ist. Falls dies nicht der Fall ist, wird die Eingabe wiederholt.
+Allerdings wird Maybe in `UserInput#getColor` zurückgegeben, wenn keine korrekte Farbe eingegeben wird. An anderer Stelle wird eine Art Fehlerbehandlung durchgeführt, indem die selbe Funktion rekursiv erneut aufgerufen wird, etwa in 'UserInput#getInput'.
 
 ## - Eigene Datentypen - ja
 
@@ -93,11 +93,11 @@ Ja. Sowohl in Game als auch in CustomGame kommen sie im Kontext von getLine vor.
 
 ## - Modularisierung - ja
 
-Bereits erwähnt wurde, dass die Datentypen in GameElements ausgelagert wurde. Der eigentliche Algorithmus ist so gekapselt in Collision.
+Bereits erwähnt wurde, dass die Datentypen in GameElements ausgelagert wurde. Der eigentliche Algorithmus ist so gekapselt in Solving.
 
 ## - Übersichtlicher Code (ggf. let / where verwendet) - ja
 
-Damit der Code möglichst leserlich ist, haben wir den Ablauf in möglichst viele Teilfunktionen zerlegt und mit Kommentaren ergänzt. Wo eine weitere Zerlegung nicht möglich war, haben wir where und let verwendet, um den Ablauf innerhalb der Funktion deutlicher zu machen, etwa in `Collision#placeOnPositionsIfLegal` und `Collision#solveSingleBlock`.
+Damit der Code möglichst leserlich ist, haben wir den Ablauf in möglichst viele Teilfunktionen zerlegt und mit Kommentaren ergänzt. Wo eine weitere Zerlegung nicht möglich war, haben wir where und let verwendet, um den Ablauf innerhalb der Funktion deutlicher zu machen, etwa in `Solving#placeOnPositionsIfLegal` und `Solving#solveSingleBlock`.
 
 ## - wichtigste Teile des Codes dokumentiert - ja
 
