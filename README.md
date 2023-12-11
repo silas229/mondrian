@@ -47,6 +47,8 @@ Possible solutions:
 
 ![Example Solution](example-solution.png)
 
+Die Darstellung in der Konsole erfolgt wie im Screenshot zu sehen als farbige Blöcke. Dadurch lassen sich gleichfarbige Blöcke nicht immer zweifelsfrei voneinander abgrenzen, was den Limitierungen einer Konsolenausgabe geschuldet ist. Deshalb können auch Lösungen scheinbar wie Duplikate wirken. In der Praxis stellt dies jedoch kein Problem dar, da für das Lösen des Puzzles die genaue Platzierung der Blöcke irrelevant ist. Außerdem ist durch die verschiedenen Farben sichergestellt, dass die Lösung immer ausreichend eindeutig ist.
+
 ## - Listen - ja
 
 Listen werden in den meisten Funktionen verwendet. Bei der Berechnung aller Lösungsmöglichkeiten werden die verschiedenen Spielbretter, welche alle möglichen Kombinationen darstellen, als Liste gespeichert.
