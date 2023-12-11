@@ -5,6 +5,21 @@ import Collision
 import Drawing
 
 
+main :: IO()
+main = do
+    putStrLn "Running tests for collisiondetection related functions"
+    testSolveGame1Block
+    testSolveGame2Blocks
+    testSolveGame2BigBlocks
+    testIsInBounds
+    testPlaceOnPositionsIfPossible
+    testPlaceBlock
+    testIsColliding
+    testIsCollidingOld
+    testOccupies
+    testIsOccupied
+    putStrLn "Finished tests for collisiondetection related functions"
+
 ------tests for collisiondetection related functions
 
 testSolveGame1Block :: IO()

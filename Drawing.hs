@@ -3,21 +3,27 @@ module Drawing where
 import GameElements
 import Collision
 
-
 ------------- functions to draw a Board to the Console
 --draws the Board in the Console. Coordinates occupied by a Block are marked with an X, the rest with an O
 draw :: Board -> IO()
-draw (Board h w blocks) = do
-    let emptyString = replicate (h*w) 'O'
+draw board = do
+    (Board h w blocks) <- return board
+    let emptyStrings = replicate (h*w) " "
     let blockedPositions = listOccupiedpositions blocks
-    let blockedPositionInts = map (positionToInt (Board h w blocks)) blockedPositions
-    let filledString = multiReplaceAt "X" emptyString blockedPositionInts
-    let formattedString = multiInsertAt "\n" filledString [ x*w | x <- reverse [1..h-1] ]
+    let blockedPositionInts = map (positionToInt board) blockedPositions
+
+    let filledString = multiReplaceAt emptyStrings board blockedPositions
+    let formattedString = concat (multiInsertAt ["\n"] filledString [ x*w | x <- reverse [1..h-1] ])
     putStrLn formattedString
+    putStrLn (replicate w '-')
 
 -- returns the Color attribute of the PlacedBlock
 colorOf :: PlacedBlock -> Color
 colorOf (PlacedBlock (Block _ _ color) _) = color
+
+
+colorString :: Color -> String
+colorString color = getColorCode color ++ "█" ++ getColorCode Default
 
 -- returns all PlacedBlocks that occupy a single position on the Board
 -- if the game is played correctly, there should not be more than one block in one Position, but it can happen.
@@ -28,7 +34,9 @@ placedBlocksAt position (Board h w blocks) = filter (occupies position) blocks
 colorAt :: Position -> Board -> Maybe Color
 colorAt position board =
     if length (placedBlocksAt position board) > 0
-    then Just (colorOf (head (placedBlocksAt position board)))
+    then case placedBlocksAt position board of
+           [] -> Nothing
+           (x:_) -> Just (colorOf x)
     else Nothing
 
 positionToInt :: Board -> Position -> Int
@@ -51,13 +59,45 @@ multiInsertAt toInsert original (indicesHead:indicesTail) =
     multiInsertAt toInsert (insertAt toInsert original indicesHead) indicesTail
 
 -- replaces the element in the original list at the supplied index with toInsert
-replaceAt :: [a] -> [a] -> Int -> [a]
+replaceAt :: String -> [String] -> Int -> [String]
 replaceAt toInsert original index = do
     let( start , _:end ) = splitAt index original
-    start ++ toInsert ++ end
+    start ++ [toInsert] ++ end
 
 -- uses replaceAt to recursively replace the elements in the original List at all supplied indices with toInsert
-multiReplaceAt :: [a] -> [a] -> [Int] -> [a]
-multiReplaceAt _ original [] = original
-multiReplaceAt toInsert original (indicesHead:indicesTail) =
-    multiReplaceAt toInsert (replaceAt toInsert original indicesHead) indicesTail
+multiReplaceAt :: [String] -> Board -> [Position] -> [String]
+multiReplaceAt original board [] = original
+multiReplaceAt original board (indicesHead:indicesTail) =
+    let placedBlocks = placedBlocksAt indicesHead board
+    in case placedBlocks of
+        [] -> multiReplaceAt original board indicesTail
+        (x:_) -> multiReplaceAt (replaceAt (colorString (colorOf x)) original (positionToInt board indicesHead)) board indicesTail
+
+-- returns the ANSI color code for the supplied Color
+getColorCode :: Color -> String
+getColorCode color = case color of
+    Default -> "\ESC[0m"
+    Black -> "\ESC[30m"
+    Red -> "\ESC[31m"
+    Yellow -> "\ESC[33m"
+    Blue -> "\ESC[34m"
+    White -> "\ESC[37m"
+
+getColor :: Char -> Color
+getColor color = case color of
+    'D' -> Default
+    'S' -> Black
+    'R' -> Red
+    'Y' -> Yellow
+    'B' -> Blue
+    'W' -> White
+
+-- getColorCode :: Color -> String
+-- getColorCode color = case color of
+--     Default -> " "
+--     Black -> "S"
+--     Red -> "R"
+--     Yellow -> "Y"
+--     Blue -> "B"
+--     White -> "W"
+

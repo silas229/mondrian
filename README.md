@@ -12,7 +12,7 @@ Im einem Berechnungsschritt wird also der ein Block auf jedes freie Feld des Spi
 Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispiel: Die kleinsten Blöcke zuerst platzieren, um, sollte es auf dem Spielfeld eine 1-breite Lücke, aber keinen so schmalen Block mehr geben, den Versuch direkt zu verwerfen. Es hat sich aber herausgestellt, dass es am effizientesten ist, die größten Blöcke zuerst zu platzieren, um so früh die Anzahl zu prüfender Varianten zu begrenzen.
 
 ## 2) Wie ist der Installationsprozess?
-Es gibt keine Dependencies, das Programm kann einfach durch Aufruf von main in Game gestartet werden.
+Es gibt keine Dependencies, das Programm kann einfach durch Aufruf von main in Game gestartet werden. Wichtig ist, dass das Terminal ANSI-Farbcodes unterstützt.
 
 ## 3) Wie ist die Bedienung?
 Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt.

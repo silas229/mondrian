@@ -2,7 +2,7 @@ module GameElements where
 
 --------data type definions
 
-data Color = Red | Green | Blue deriving (Eq, Show)
+data Color = Default | Black | Red | Yellow | Blue | White deriving (Eq, Show)
 
 data Position = Position
     {   x :: Int,
@@ -31,4 +31,9 @@ data Board = Board
     {   boardHeight :: Int
     ,   boardWidth :: Int
     ,   placedBlocks :: [PlacedBlock]
+    }
+
+data Game = Game
+    {   board :: Board
+    ,   blocks :: [Block]
     }
