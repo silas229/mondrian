@@ -71,23 +71,6 @@ allOccupiedPositionsPlacedBlock (PlacedBlock (Block height width _) (Position x 
 rotate :: Block -> Block
 rotate block = block{blockHeight = blockWidth block, blockWidth = blockHeight block}
 
--- old ----------------
-
--- checks if a new PlacedBlock can be placed on the board, or if it would collide with an already existing PlacedBlock on the Board
-isCollidingOld :: Board -> PlacedBlock -> Bool
-isCollidingOld board newBlock = do -- checks all positions the newBlock occupies
-    let allPositions = allOccupiedPositionsPlacedBlock newBlock
-    let checkPositionOnBoard = isOccupied board
-    let positionsBlockedList = map checkPositionOnBoard allPositions
-    any (==True) positionsBlockedList
-
--- checks if a Position is occupied on the Board
-isOccupied :: Board -> Position -> Bool
-isOccupied (Board _ _ placedBlocks) position = do
-    let positionOccupied = occupies position
-    let positionIsBlockedList = map positionOccupied placedBlocks -- checks all blocks, if they block this position
-    any (==True) positionIsBlockedList
-
 -- checks if the supplied Position is occupied by this Block
 occupies :: Position -> PlacedBlock -> Bool
 occupies (Position x y) (PlacedBlock (Block height width _) (Position blockX blockY)) = x < (blockX + width) && x >= blockX && y < (blockY + height) && y >= blockY
