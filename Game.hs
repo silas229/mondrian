@@ -4,9 +4,12 @@ import GameElements
 import Drawing
 import Collision
 
+-- Main function
+-- Adds the ability to play a original Mondrian Blocks game
+-- Asks the user for input and prints the solutions
 main :: IO ()
 main = do
-  putStrLn "Enter x,y for block 1x1"
+  putStrLn "Enter x,y for block 1x1. Position 0,0 is at the upper left corner."
   input <- getLine
   let [x, y] = map read (splitOn ',' input) :: [Int]
 
@@ -46,6 +49,8 @@ main = do
   sequence_ (map draw (solveGame getBlocks board))
   putStrLn "Done"
 
+-- Splits a string on a given character
+-- Returns a list of strings
 splitOn :: Char -> String -> [String]
 splitOn _ [] = []
 splitOn c s = let (x, rest) = break (== c) s
@@ -53,5 +58,6 @@ splitOn c s = let (x, rest) = break (== c) s
     [] -> []
     (_:xs) -> splitOn c xs
 
+-- Returns the list of blocks for the original Mondrian Blocks game
 getBlocks :: [Block]
 getBlocks = [Block 3 4 Yellow, Block 3 3 White, Block 2 2 White, Block 2 5 Red, Block 2 4 Red, Block 2 3 Red, Block 1 5 Blue, Block 1 4 Blue]

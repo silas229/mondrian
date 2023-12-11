@@ -4,23 +4,29 @@ import GameElements
 import Drawing
 import Collision
 
+-- Main function
+-- Adds the ability to play a custom game with custom blocks and a custom board size
+-- Asks the user for input and prints the solutions
 main :: IO ()
 main = do
   putStrLn "Enter board dimensions w,h"
   input <- getLine
   let [w,h] = map read (splitOn ',' input) :: [Int]
 
-  putStrLn "Enter x,y,w,h for a black starting block and w,h,color for a block to be placed. Color is interpreted by the first letter."
+  putStrLn "Enter x,y,w,h for a black starting block and w,h,color for a block to be placed. Position 0,0 is at the upper left corner. Color is interpreted by the first letter."
   let args = splitOn ',' input
 
-  let [board, placedBlocks] = getUserInput w h
+  let [board, blocks] = getUserInput w h
   putStrLn "Initial board:"
   draw board
 
   putStrLn "Possible solutions:"
-  sequence_ (map draw (solveGame getBlocks board))
+  sequence_ (map draw (solveGame blocks board))
   putStrLn "Done"
 
+-- Splits a string on a given character
+-- Returns a list of strings
+-- TODO: Duplicate of function in Game.hs
 splitOn :: Char -> String -> [String]
 splitOn _ [] = []
 splitOn c s = let (x, rest) = break (== c) s
@@ -28,12 +34,13 @@ splitOn c s = let (x, rest) = break (== c) s
     [] -> []
     (_:xs) -> splitOn c xs
 
-getBlocks :: [Block]
-getBlocks = [Block 3 4 Yellow, Block 3 3 White, Block 2 2 White, Block 2 5 Red, Block 2 4 Red, Block 2 3 Red, Block 1 5 Blue, Block 1 4 Blue]
-
+-- Calculates the cumulative area of all blocks
 calcArea :: [Block] -> Int
 calcArea blocks = sum (map (\b -> blockHeight b * blockWidth b) blocks)
 
+-- Get user input for the blocks (3 args) and placed blocks (4 args)
+-- Returns Game data type which consists of a tuple of the Board and the Blocks
+-- Returns Nothing if the blocks do not fit on the board
 getUserInput :: Int -> Int ->IO (Maybe [Game])
 getUserInput w h = do
   let blocks = []
