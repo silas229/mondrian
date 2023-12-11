@@ -1,9 +1,11 @@
 module Drawing where
 
 import GameElements
-import Collision
+import Solving
 
 ------------- functions to draw a Board to the Console
+
+
 --draws the Board in the Console. Coordinates occupied by a Block are marked with an X, the rest with an O
 draw :: Board -> IO()
 draw board = do
@@ -82,22 +84,3 @@ getColorCode color = case color of
     Yellow -> "\ESC[33m"
     Blue -> "\ESC[34m"
     White -> "\ESC[37m"
-
-getColor :: Char -> Color
-getColor color = case color of
-    'D' -> Default
-    'S' -> Black
-    'R' -> Red
-    'Y' -> Yellow
-    'B' -> Blue
-    'W' -> White
-
--- getColorCode :: Color -> String
--- getColorCode color = case color of
---     Default -> " "
---     Black -> "S"
---     Red -> "R"
---     Yellow -> "Y"
---     Blue -> "B"
---     White -> "W"
-

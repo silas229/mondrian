@@ -1,4 +1,4 @@
-module Collision where
+module Solving where
 
 import GameElements
 import Data.List (sort)
@@ -7,10 +7,10 @@ import Data.List (sort)
 -- Solves the game. Returns all possible solutions for the supplied blocks and board.
 -- This is the function you're going to want to call from the "frontend" to get all solutions to the game.
 -- Sorts the Blocks, because starting with the biggest Blocks improves performance.
-solveGame :: Game -> [Board]
-solveGame (Game board blocks) = solve (sort blocks) board
+solveGame :: [Block] -> Board -> [Board]
+solveGame blocks board = solve (sort blocks) board
     where solve [] board = [board]
-          solve (currentBlock:remainingBlocks) board = concatMap (solveSingleBlock currentBlock) (solveGame (Game board remainingBlocks))
+          solve (currentBlock:remainingBlocks) board = concatMap (solveSingleBlock currentBlock) (solveGame remainingBlocks board)
 
 -- Returns all possible solutions to legally (no overlapping, in bounds) place a single block on the board, including rotation.
 -- Algorithm: try to place the block on each square of the board -> create copy of board for each legal placement -> return these

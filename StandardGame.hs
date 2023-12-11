@@ -1,0 +1,36 @@
+module StandardGame where
+
+import GameElements
+import Drawing
+import Solving
+import UserInput
+
+--functionality to start a normal Mondrian Blocks game with the normal Blocks and Board.
+
+
+-- Main function
+-- Provides the ability to solve a normal Mondrian Blocks game
+-- Asks the user for the positions of the three black blocks and prints the solutions
+main :: IO ()
+main = do
+  let blackBlocks = [Block 1 1 Black, Block 2 1 Black, Block 3 1 Black]
+  placedBlackBlocks <- mapM inputPositionAndRotation blackBlocks
+
+  let board = Board 8 8 placedBlackBlocks
+  putStrLn "Initial board:"
+  draw board
+
+  solutions (Game board getBlocks)
+
+--prints all solutions for the Game to the console
+solutions :: Game -> IO ()
+solutions game = do
+  putStrLn "Possible solutions:"
+  let solutions = solveGame (blocks game) (board game)
+  sequence_ (map draw solutions)
+  putStrLn ("Done. Number of solutions: " ++ show (length solutions))
+
+
+-- all freely placable blocks in the original Mondrian Blocks game
+getBlocks :: [Block]
+getBlocks = [Block 3 4 Yellow, Block 3 3 White, Block 2 2 White, Block 2 5 Red, Block 2 4 Red, Block 2 3 Red, Block 1 5 Blue, Block 1 4 Blue]
