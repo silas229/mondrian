@@ -1,3 +1,7 @@
+---
+author: Niklas Ande, Silas Meyer
+---
+
 # mondrian
 
 A solver for the puzzle game <https://mondrianblocks.com/>
@@ -11,7 +15,6 @@ Mit unserem Programm kann nun diese Ausgangslage per Konsoleneingabe eingegeben,
 Der Lösungsalgorithmus basiert darauf, einen Block nach dem anderen an allen noch freien Positionen des Spielfeldes zu platzieren. Jede dieser Platzierungen wird als Kopie des Spielfelds gespeichert und als Ausgangslage für den nächsten Berechnungsschritt genutzt. In den meisten Fällen bleibt irgendwann kein Platz mehr für den nächsten Block, und dieser Lösungsansatz wird verworfen. Passiert dies nie, handelt es sich um eine valide Lösung, die schließlich zurück gegeben wird.
 Im einem Berechnungsschritt wird also der ein Block auf jedes freie Feld des Spielbretts platziert. Für jede Möglichkeit wird  eine Kopie des Spielfelds mit diesem platzierten Block erstellt. Auf jede dieser Kopien wird nun wieder dieser Berechnungsschritt angewandt. Dies wird wiederholt, bis keine Blöcke mehr übrig sind.  
 Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispiel: Die kleinsten Blöcke zuerst platzieren, um, sollte es auf dem Spielfeld eine 1-breite Lücke, aber keinen so schmalen Block mehr geben, den Versuch direkt zu verwerfen. Es hat sich aber herausgestellt, dass es am effizientesten ist, die größten Blöcke zuerst zu platzieren, um so früh die Anzahl zu prüfender Varianten zu begrenzen.
-<!-- TODO: Falls du den Code für die anderen Algorithmen noch hast: Benchmarks präsentieren -->
 
 ## 2) Wie ist der Installationsprozess?
 
@@ -49,6 +52,8 @@ Possible solutions:
 
 Die Darstellung in der Konsole erfolgt wie im Screenshot zu sehen als farbige Blöcke. Dadurch lassen sich gleichfarbige Blöcke nicht immer zweifelsfrei voneinander abgrenzen, was den Limitierungen einer Konsolenausgabe geschuldet ist. Deshalb können auch Lösungen scheinbar wie Duplikate wirken. In der Praxis stellt dies jedoch kein Problem dar, da für das Lösen des Puzzles die genaue Platzierung der Blöcke irrelevant ist. Außerdem ist durch die verschiedenen Farben sichergestellt, dass die Lösung immer ausreichend eindeutig ist.
 
+# Sprachkonzepte
+
 ## - Listen - ja
 
 Listen werden in den meisten Funktionen verwendet. Bei der Berechnung aller Lösungsmöglichkeiten werden die verschiedenen Spielbretter, welche alle möglichen Kombinationen darstellen, als Liste gespeichert.
@@ -63,20 +68,20 @@ In zahlreichen Funktionen wird Pattern Matching verwendet, etwa in Collision#pla
 
 ## - Funktionen mit guards - ja
 
-Wird etwa in Collision#placePositionsIfLegal  verwendet.
+Wird etwa in `Collision#placePositionsIfLegal`  verwendet.
 
 ## - Rekursive Funktionen - ja
 
-Rekursion wird an allen Stellen eingesetzt, wo wiederholte Ausführung nötig ist, etwa in Collision#placeOnPositionsIfLegal oder CustomGame#getUserInput.
+Rekursion wird an allen Stellen eingesetzt, wo wiederholte Ausführung nötig ist, etwa in `Collision#placeOnPositionsIfLegal` oder `CustomGame#getUserInput`.
 
 ## - Funktionen höherer Ordnung wie map, filter, fold - ja
 
-Zum Beispiel concatMap in Collision#solveGame und Collision#allOccupiedPositionsBoard.
+Zum Beispiel concatMap in `Collision#solveGame` und `Collision#allOccupiedPositionsBoard`.
 
 ## - Fehlerbehandlung ggf. mit Either oder Maybe - ja
 
 Der Algorithmus wurde so entwickelt, dass Fehlerbehandlung dort nicht notwendig ist. Wenn es keine validen Lösungen für den eingegebenen Spielstand gibt, dann ist das kein Fehler, entsprechend wird eine leere Liste zurück gegeben.
-Allerdings wird Maybe in CustomGame#getUserInput zurückgegeben, wenn mehr Blöcke angegeben werden, als auf das Board passen. Dort wird auch weitere Fehlerbehandlung der Eingabe durchgeführt, indem geprüft wird, ob die Anzahl der Argumente korrekt ist. Falls dies nicht der Fall ist, wird die Eingabe wiederholt.
+Allerdings wird Maybe in `CustomGame#getUserInput` zurückgegeben, wenn mehr Blöcke angegeben werden, als auf das Board passen. Dort wird auch weitere Fehlerbehandlung der Eingabe durchgeführt, indem geprüft wird, ob die Anzahl der Argumente korrekt ist. Falls dies nicht der Fall ist, wird die Eingabe wiederholt.
 
 ## - Eigene Datentypen - ja
 
@@ -92,7 +97,7 @@ Bereits erwähnt wurde, dass die Datentypen in GameElements ausgelagert wurde. D
 
 ## - Übersichtlicher Code (ggf. let / where verwendet) - ja
 
-Damit der Code möglichst leserlich ist, haben wir den Ablauf in möglichst viele Teilfunktionen zerlegt und mit Kommentaren ergänzt. Wo eine weitere Zerlegung nicht möglich war, haben wir where und let verwendet, um den Ablauf innerhalb der Funktion deutlicher zu machen, etwa in Collision#placeOnPositionsIfLegal und Collision#solveSingleBlock.
+Damit der Code möglichst leserlich ist, haben wir den Ablauf in möglichst viele Teilfunktionen zerlegt und mit Kommentaren ergänzt. Wo eine weitere Zerlegung nicht möglich war, haben wir where und let verwendet, um den Ablauf innerhalb der Funktion deutlicher zu machen, etwa in `Collision#placeOnPositionsIfLegal` und `Collision#solveSingleBlock`.
 
 ## - wichtigste Teile des Codes dokumentiert - ja
 
