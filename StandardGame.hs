@@ -22,13 +22,24 @@ main = do
 
   solutions (Game board getBlocks)
 
---prints all solutions for the Game to the console
+-- first prints all solutions for the Game to the console
+-- then lets the user select any solution by index to print again
 solutions :: Game -> IO ()
 solutions game = do
   putStrLn "Possible solutions:"
   let solutions = solveGame (blocks game) (board game)
   sequence_ (map draw solutions)
   putStrLn ("Done. Number of solutions: " ++ show (length solutions))
+  loopPrintSelectSolution solutions where
+    loopPrintSelectSolution :: [Board] -> IO()
+    loopPrintSelectSolution solutions = do
+      putStrLn "type index of solution to print or q to leave."
+      input <- getLine
+      if input /= "q" then do
+          let index = read input :: Int
+          draw (solutions!!index)
+          loopPrintSelectSolution solutions
+        else return()
 
 
 -- all freely placable blocks in the original Mondrian Blocks game
