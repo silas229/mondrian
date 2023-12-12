@@ -18,12 +18,12 @@ Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispie
 
 ## 2) Wie ist der Installationsprozess?
 
-Es gibt keine Dependencies, das Programm kann einfach durch Aufruf von main in Game gestartet werden. Wichtig ist, dass das Terminal ANSI-Farbcodes unterstützt.
+Es gibt keine Dependencies, das Programm kann einfach durch Aufruf der main in StandardGame oder CustomGame gestartet werden. Wichtig ist, dass das Terminal ANSI-Farbcodes unterstützt.
 
 ## 3) Wie ist die Bedienung?
 
-Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt. (`$ runhaskell ./Game.hs`)
-Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe. (`$ runhaskell ./Game.hs`)
+Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt. (`$ runhaskell ./StandardGame.hs`)
+Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe. (`$ runhaskell ./CustomGame.hs`)
 
 ### Beispielprotokoll (Originalspiel)
 
@@ -60,11 +60,11 @@ Listen werden in den meisten Funktionen verwendet. Bei der Berechnung aller Lös
 
 ## - list comprehension - ja
 
-Wird verwendet, etwa in 'Solving#allPositionsBoard'.
+Wird verwendet, etwa in `Solving#allPositionsBoard`.
 
 ## - Funktionen mit pattern matching - ja
 
-In zahlreichen Funktionen wird Pattern Matching verwendet, etwa in 'Solving#placeOnBlocksIfLegal', wo es verwendet wird, um eine Liste zu Teilen und Rekursion zu vereinfachen. Auch in 'Solving#isInBounds', 'Solving#allOccupiedPositions', und anderen Funktionen wird es verwendet.
+In zahlreichen Funktionen wird Pattern Matching verwendet, etwa in `Solving#placeOnBlocksIfLegal`, wo es verwendet wird, um eine Liste zu Teilen und Rekursion zu vereinfachen. Auch in `Solving#isInBounds`, `Solving#allOccupiedPositions`, und anderen Funktionen wird es verwendet.
 
 ## - Funktionen mit guards - ja
 
@@ -80,7 +80,7 @@ Zum Beispiel concatMap in `Solving#solveGame` und `Solving#allOccupiedPositionsB
 
 ## - Fehlerbehandlung ggf. mit Either oder Maybe - ja
 
-Der Algorithmus wurde so entwickelt, dass Fehlerbehandlung dort nicht notwendig ist. Wenn es keine validen Lösungen für den eingegebenen Spielstand gibt, dann ist das kein Fehler, entsprechend wird eine leere Liste zurück gegeben.
+Der Lösungsalgorithmus wurde so entwickelt, dass Fehlerbehandlung dort nicht notwendig ist. Wenn es keine validen Lösungen für den eingegebenen Spielstand gibt, dann ist das kein Fehler, entsprechend wird eine leere Liste zurück gegeben.
 Allerdings wird Maybe in `UserInput#getColor` zurückgegeben, wenn keine korrekte Farbe eingegeben wird. An anderer Stelle wird eine Art Fehlerbehandlung durchgeführt, indem die selbe Funktion rekursiv erneut aufgerufen wird, etwa in 'UserInput#getInput'.
 
 ## - Eigene Datentypen - ja
@@ -89,11 +89,12 @@ Ja. Eigene Datentypen waren essenziell, um das Programm effizient umzusetzen. An
 
 ## - Ein/Ausgabe mit IO-Monaden - ja
 
-Ja. Sowohl in Game als auch in CustomGame kommen sie im Kontext von getLine vor.
+Ja. Sowohl in StandardGame als auch in CustomGame kommen sie im Kontext von getLine vor.
 
 ## - Modularisierung - ja
 
 Bereits erwähnt wurde, dass die Datentypen in GameElements ausgelagert wurde. Der eigentliche Algorithmus ist so gekapselt in Solving.
+Die Funktionen für die Konsoleneingabe befinden sich hauptsächlich in UserInput, und StandardGame und CustomGame enthalten Funktionen spezifisch für die jeweiligen Spielmodi. 
 
 ## - Übersichtlicher Code (ggf. let / where verwendet) - ja
 
@@ -101,4 +102,4 @@ Damit der Code möglichst leserlich ist, haben wir den Ablauf in möglichst viel
 
 ## - wichtigste Teile des Codes dokumentiert - ja
 
-Alle Funktionen des Lösungsalgorithmus sind kommentiert, um die Implementierung nachvollziehbarer zu machen.
+Alle Funktionen sind kommentiert, um die Implementierung nachvollziehbarer zu machen.
