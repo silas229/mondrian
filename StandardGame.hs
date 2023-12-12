@@ -32,11 +32,14 @@ solutions game = do
   putStrLn ("Done. Number of solutions: " ++ show (length solutions))
   if length solutions > 1 then 
     loopPrintSelectSolution solutions 
-    else return()
+    else do
+      print "type anything to exit."
+      input <- getLine
+      return()
   where
     loopPrintSelectSolution :: [Board] -> IO()
     loopPrintSelectSolution solutions = do
-      putStrLn "type index of solution to print or q to leave."
+      putStrLn "type index of solution to print or q to exit."
       input <- getLine
       if input /= "q" then do
           let index = read input :: Int
