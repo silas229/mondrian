@@ -12,7 +12,7 @@ import UserInput
 -- Asks the user for input and prints the solutions
 main :: IO ()
 main = do
-  putStrLn "Enter board dimensions w,h"
+  putStrLn "Enter board dimensions w,h:"
   input <- getLine
   let [w,h] = map read (splitOn ',' input) :: [Int]
 
