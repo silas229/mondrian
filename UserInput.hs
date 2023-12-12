@@ -8,23 +8,23 @@ import Data.Char (toUpper)
 --lets the user input a Block via the command line.
 inputBlock :: IO Block
 inputBlock = do
-    putStrLn "Enter w,h,color of the block to place. Choose color from {S, R, Y, B, W}."
+    putStrLn "Enter w,h,color of the block to place. Choose color from {s, r, y, b, w}."
     [h,w,c] <- getInput ',' 3
 
-    let color = getColor (toUpper (read c :: Char)) 
+    let color = getColor c 
     case color of
         Nothing -> do
             putStrLn "Invalid color. Try again."
             inputBlock
         Just color -> return (Block (read h :: Int) (read w :: Int) color)
 
-getColor :: Char -> Maybe Color
+getColor :: String -> Maybe Color
 getColor color = case color of
-    'S' -> Just Black
-    'R' -> Just Red
-    'Y' -> Just Yellow
-    'B' -> Just Blue
-    'W' -> Just White
+    "s" -> Just Black
+    "r" -> Just Red
+    "y" -> Just Yellow
+    "b" -> Just Blue
+    "w" -> Just White
     _ -> Nothing
 
 
