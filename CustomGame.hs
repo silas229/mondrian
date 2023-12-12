@@ -40,7 +40,7 @@ getUserInput board looseBlocks = do
 
     newBlock <- inputBlock
 
-    putStrLn "Is this block already on the board? [y/n]"
+    putStrLn "Is this block already placed? [y/n]"
     input <- getLine
     if input == "y" then do
         newPlacedBlock <- inputPositionAndRotation newBlock
