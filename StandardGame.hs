@@ -30,7 +30,10 @@ solutions game = do
   let solutions = solveGame (blocks game) (board game)
   sequence_ (map draw solutions)
   putStrLn ("Done. Number of solutions: " ++ show (length solutions))
-  loopPrintSelectSolution solutions where
+  if length solutions > 1 then 
+    loopPrintSelectSolution solutions 
+    else return()
+  where
     loopPrintSelectSolution :: [Board] -> IO()
     loopPrintSelectSolution solutions = do
       putStrLn "type index of solution to print or q to leave."
