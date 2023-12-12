@@ -18,7 +18,8 @@ Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispie
 
 ## 2) Wie ist der Installationsprozess?
 
-Es gibt keine Dependencies, das Programm kann einfach durch Aufruf der main in StandardGame oder CustomGame gestartet werden. Wichtig ist, dass das Terminal ANSI-Farbcodes unterstützt.
+Es gibt keine Dependencies, das Programm kann einfach durch Aufruf der main in StandardGame oder CustomGame gestartet werden. Wichtig ist, dass das Terminal ANSI-Farbcodes unterstützt.  
+Damit die Blöcke quadratisch angezeigt werden, wird empfohlen, beim Terminal das Vertical Spacing auf 0.67 und das Horizontal Spacing auf 1.5 zu stellen.
 
 ## 3) Wie ist die Bedienung?
 
@@ -28,27 +29,32 @@ Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, be
 ### Beispielprotokoll (Originalspiel)
 
 ```
-$ runhaskell ./Game.hs
-Enter x,y for block 1x1. Position 0,0 is at the upper left corner.
-2,3
+$  runhaskell StandardGame.hs
+Enter x,y,orientation (v/h) for block 1x1
+2,3,v
 Enter x,y,orientation (v/h) for block 1x2
 0,1,v
 Enter x,y,orientation (v/h) for block 1x3
 4,7,h
 Initial board:
 
-█
-█
-  █
-
-
-
-    ███
+█       
+█       
+  █     
+        
+        
+        
+    ███ 
 --------
 Possible solutions:
 ```
 
 ![Example Solution](example-solution.png)
+
+```
+--------
+Done. Number of solutions: 1
+```
 
 Die Darstellung in der Konsole erfolgt wie im Screenshot zu sehen als farbige Blöcke. Dadurch lassen sich gleichfarbige Blöcke nicht immer zweifelsfrei voneinander abgrenzen, was den Limitierungen einer Konsolenausgabe geschuldet ist. Deshalb können auch Lösungen scheinbar wie Duplikate wirken. In der Praxis stellt dies jedoch kein Problem dar, da für das Lösen des Puzzles die genaue Platzierung der Blöcke irrelevant ist. Außerdem ist durch die verschiedenen Farben sichergestellt, dass die Lösung immer ausreichend eindeutig ist.
 
@@ -81,7 +87,7 @@ Zum Beispiel concatMap in `Solving#solveGame` und `Solving#allOccupiedPositionsB
 ## - Fehlerbehandlung ggf. mit Either oder Maybe - ja
 
 Der Lösungsalgorithmus wurde so entwickelt, dass Fehlerbehandlung dort nicht notwendig ist. Wenn es keine validen Lösungen für den eingegebenen Spielstand gibt, dann ist das kein Fehler, entsprechend wird eine leere Liste zurück gegeben.
-Allerdings wird Maybe in `UserInput#getColor` zurückgegeben, wenn keine korrekte Farbe eingegeben wird. An anderer Stelle wird eine Art Fehlerbehandlung durchgeführt, indem die selbe Funktion rekursiv erneut aufgerufen wird, etwa in 'UserInput#getInput'.
+Allerdings wird Maybe in `UserInput#getColor` zurückgegeben, wenn keine korrekte Farbe eingegeben wird. An anderer Stelle wird eine Art Fehlerbehandlung durchgeführt, indem die selbe Funktion rekursiv erneut aufgerufen wird, etwa in `UserInput#getInput`.
 
 ## - Eigene Datentypen - ja
 
