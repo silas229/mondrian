@@ -19,12 +19,18 @@ Wir haben auch Optimierungsmöglichkeiten für den Algorithmus probiert. Beispie
 ## 2) Wie ist der Installationsprozess?
 
 Es gibt keine Dependencies, das Programm kann einfach durch Aufruf der main in StandardGame oder CustomGame gestartet werden. Wichtig ist, dass das Terminal ANSI-Farbcodes unterstützt.  
-Damit die Blöcke quadratisch angezeigt werden, wird empfohlen, beim Terminal das Vertical Spacing auf 0.67 und das Horizontal Spacing auf 1.5 zu stellen.
+Damit die Blöcke quadratisch angezeigt werden, wird empfohlen, beim Terminal das Vertical Spacing auf 0.67 und das Horizontal Spacing auf 1.5 zu stellen.  
+Das Programm kann wie folgt zu einer ausführbaren Datei kompiliert werden:
+
+```sh
+ghc --make CustomGame.hs -threaded && ghc -main-is CustomGame CustomGame.hs
+ghc --make StandardGame.hs -threaded && ghc -main-is StandardGame StandardGame.hs
+```
 
 ## 3) Wie ist die Bedienung?
 
-Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt. (`$ runhaskell ./StandardGame.hs`)
-Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe. (`$ runhaskell ./CustomGame.hs`)
+Wir haben einen Algorithmus entwickelt, der alle möglichen Anordnungen der übrigen Blöcke findet, sodass alle Blöcke auf das Spielfeld passen. Die Positionen der vorgegebenen Blöcke können per Konsoleneingabe festgelegt werden, und anschließend werden alle gefundenen Lösungen angezeigt. (`$ runhaskell ./StandardGame.hs` bzw. `$ ./StandardGame`)
+Außerdem haben wir eine weitere, allgemeinere Konsoleneingabe implementiert, bei der die Größe des Spielfelds und die Anzahl, Position und Maße aller Blöcke komplett frei angegeben werden kann. Der zugrunde liegende Lösungsalgorithmus ist hierbei der selbe. (`$ runhaskell ./CustomGame.hs` bzw. `$ ./CustomGame`)
 
 ### Beispielprotokoll (Originalspiel)
 
@@ -54,6 +60,7 @@ Possible solutions:
 ```
 --------
 Done. Number of solutions: 1
+Enter anything to exit.
 ```
 
 Die Darstellung in der Konsole erfolgt wie im Screenshot zu sehen als farbige Blöcke. Dadurch lassen sich gleichfarbige Blöcke nicht immer zweifelsfrei voneinander abgrenzen, was den Limitierungen einer Konsolenausgabe geschuldet ist. Deshalb können auch Lösungen scheinbar wie Duplikate wirken. In der Praxis stellt dies jedoch kein Problem dar, da für das Lösen des Puzzles die genaue Platzierung der Blöcke irrelevant ist. Außerdem ist durch die verschiedenen Farben sichergestellt, dass die Lösung immer ausreichend eindeutig ist.
@@ -95,12 +102,12 @@ Ja. Eigene Datentypen waren essenziell, um das Programm effizient umzusetzen. An
 
 ## - Ein/Ausgabe mit IO-Monaden - ja
 
-Ja. Sowohl in StandardGame als auch in CustomGame kommen sie im Kontext von getLine vor.
+Ja. Sowohl in StandardGame als auch in CustomGame kommen sie im Kontext von `getLine` vor.
 
 ## - Modularisierung - ja
 
 Bereits erwähnt wurde, dass die Datentypen in GameElements ausgelagert wurde. Der eigentliche Algorithmus ist so gekapselt in Solving.
-Die Funktionen für die Konsoleneingabe befinden sich hauptsächlich in UserInput, und StandardGame und CustomGame enthalten Funktionen spezifisch für die jeweiligen Spielmodi. 
+Die Funktionen für die Konsoleneingabe befinden sich hauptsächlich in UserInput, und StandardGame und CustomGame enthalten Funktionen spezifisch für die jeweiligen Spielmodi.
 
 ## - Übersichtlicher Code (ggf. let / where verwendet) - ja
 
