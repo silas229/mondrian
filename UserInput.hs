@@ -11,7 +11,7 @@ inputBlock = do
     putStrLn "Enter w,h,color of the block to place. Choose color from {S, R, Y, B, W}."
     [h,w,c] <- getInput ',' 3
 
-    let color = getColor (toUpper (head c))
+    let color = getColor (toUpper (read c :: Char)) 
     case color of
         Nothing -> do
             putStrLn "Invalid color. Try again."
